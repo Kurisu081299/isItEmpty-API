@@ -38,7 +38,7 @@ lockModel.insertLock = (data, callback) => {
 // Function to update the status in the lock table
 lockModel.updateLockStatus = (data, callback) => {
     const query = "UPDATE lock_tbl SET status = ? WHERE id = ? AND room_number = ?";
-    const values = [data.status, data.id, data.room_number];
+    const values = [data.status, data.lock_id, data.room_number];
 
     dbConn.query(query, values, (error, result) => {
         if (error) {
