@@ -2,7 +2,6 @@ const lockModel = require ('../model/lockModel');
 const userModel = require ('../model/userModel');
 const lockController = {};
 
-// Controller function to insert into the lock table
 lockController.insertStatus = (req, res) => {
     const { status, user_code, room_number } = req.body;
 
@@ -30,29 +29,36 @@ lockController.insertStatus = (req, res) => {
 
             // If both checks pass, insert the data into the lock table
             const data = { status, user_code, room_number };
-            
+
             lockModel.insertLock(data, (error, result) => {
                 if (error) {
                     console.error("Error inserting into lock table.", error);
                     return res.status(500).json({ message: "Error inserting into lock table." });
                 }
-                return res.status(200).json({ message: "Data inserted into lock table successfully." });
+
+                // Assuming `result.insertId` contains the newly inserted lock's ID
+                const lockId = result.insertId;
+                return res.status(200).json({
+                    message: "Data inserted into lock table successfully.",
+                    lock_id: lockId,
+                });
             });
         });
     });
 };
 
+
 // Controller function to update status in the lock table
 lockController.statusUpdate = (req, res) => {
-    const { id, room_number, status } = req.body;
+    const { lock_id, room_number, status } = req.body;
 
     // Ensure all necessary fields are provided
-    if (!id || !room_number || status === undefined) {
+    if (!lock_id || !room_number || status === undefined) {
         return res.status(400).json({ message: "Missing required fields." });
     }
 
     // Prepare data for the update query
-    const data = { id, room_number, status };
+    const data = { lock_id, room_number, status };
 
     // Call the model to perform the update
     lockModel.updateLockStatus(data, (error, result) => {
