@@ -117,7 +117,7 @@ userModel.checkUserCode = (user_code, callback) => {
 // Function to check if the username and code exist in the users table
 userModel.checkLogin = (username, code, callback) => {
     const query = "SELECT * FROM users WHERE username = ? AND code = ?";
-    const values = [username, code];
+    const values = [username, code]; // Use input parameters
 
     dbConn.query(query, values, (error, result) => {
         if (error) {
@@ -134,5 +134,6 @@ userModel.checkLogin = (username, code, callback) => {
         return callback(null, { exists: true, data: result[0] });
     });
 };
+
 
 module.exports = userModel;
