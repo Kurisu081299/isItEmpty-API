@@ -136,4 +136,30 @@ userModel.checkLogin = (username, code, callback) => {
 };
 
 
+// Function to delete the user from the database
+userModel.deleteUser = (username, code, callback) => {
+    if (!username || !code) {
+        console.error("Username or code is missing.");
+        return callback(new Error("Username or code is required."), null);
+    }
+
+    const query = "DELETE FROM users WHERE username = ? AND code = ?";
+    const values = [username, code];
+
+    dbConn.query(query, values, (error, result) => {
+        if (error) {
+            console.error("Error deleting user.", error);
+            return callback(error, null);
+        }
+
+        // Check if a row was affected
+        if (result.affectedRows === 0) {
+            return callback(null, { exists: false });
+        }
+
+        // Deletion was successful
+        return callback(null, { exists: true });
+    });
+};
+
 module.exports = userModel;
