@@ -8,6 +8,6 @@ router.get("/", userController.fetchAllUsers);
 router.post("/:code", userController.fetchCode);
 router.put("/update", userController.updateUser);
 
-router.post("/login", userController.login);
+router.post("/login/signin", userController.checkUser);
 
 module.exports = router;

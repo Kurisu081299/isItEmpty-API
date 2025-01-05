@@ -50,7 +50,7 @@ userController.fetchCode = (req, res) => {
         }
         
         if (result.length === 0) {
-            return res.status(404).json({ message: "No user found with this code." });
+            return res.status(401).json({ message: "Check credentials" });
         }
         
         return res.status(200).json(result);
@@ -80,7 +80,7 @@ userController.updateUser = (req, res) => {
 };
 
 // Controller function to check username and code for login
-userController.login = (req, res) => {
+userController.checkUser = (req, res) => {
     const { username, code } = req.body;
 
     // Check if the username and code match in the database
@@ -92,7 +92,7 @@ userController.login = (req, res) => {
 
         // If username and code don't exist
         if (!result.exists) {
-            return res.status(404).json({ message: "Invalid username or code." });
+            return res.status(401).json({ message: "Check credentials" });
         }
 
         // If login is successful, return user data
