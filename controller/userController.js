@@ -103,4 +103,24 @@ userController.checkUser = (req, res) => {
     });
 };
 
+// Controller function to delete a user
+userController.deleteUser = (req, res) => {
+    const { username, code } = req.body;
+
+    userModel.deleteUser(username, code, (error, result) => {
+        if (error) {
+            console.error("Error deleting user.", error);
+            return res.status(500).json({ message: "Error deleting user." });
+        }
+
+        // If username and code don't match
+        if (!result.exists) {
+            return res.status(404).json({ message: "User not found or invalid credentials." });
+        }
+
+        // User successfully deleted
+        return res.status(200).json({ message: "User successfully deleted." });
+    });
+};
+
 module.exports = userController;
