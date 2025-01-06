@@ -40,12 +40,33 @@ roomController.insertRoom = (req, res) => {
     });
 };
 
-// Controller function to fetch all data from rooms_tbl
+// // Controller function to fetch all data from rooms_tbl
+// roomController.getAllRooms = (req, res) => {
+//     roomModel.getAllRooms((error, result) => {
+//         if (error) {
+//             console.error("Error fetching rooms data.", error);
+//             return res.status(500).json({ message: "Error fetching rooms data." });
+//         }
+
+//         // If no data found
+//         if (result.length === 0) {
+//             return res.status(404).json({ message: "No rooms found." });
+//         }
+
+//         // Return the result
+//         return res.status(200).json({
+//             message: "Rooms data fetched successfully.",
+//             data: result
+//         });
+//     });
+// };
+
+// Controller function to fetch all data from rooms_tbl with the latest lock data
 roomController.getAllRooms = (req, res) => {
     roomModel.getAllRooms((error, result) => {
         if (error) {
-            console.error("Error fetching rooms data.", error);
-            return res.status(500).json({ message: "Error fetching rooms data." });
+            console.error("Error fetching rooms and lock data.", error);
+            return res.status(500).json({ message: "Error fetching rooms and lock data." });
         }
 
         // If no data found
@@ -55,8 +76,8 @@ roomController.getAllRooms = (req, res) => {
 
         // Return the result
         return res.status(200).json({
-            message: "Rooms data fetched successfully.",
-            data: result
+            message: "Rooms and lock data fetched successfully.",
+            data: result,
         });
     });
 };

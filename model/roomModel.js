@@ -35,18 +35,75 @@ roomModel.insertRoom = (data, callback) => {
 };
 
 
-// Function to get all data from rooms_tbl
+// // Function to get all data from rooms_tbl
+// roomModel.getAllRooms = (callback) => {
+//     const query = "SELECT * FROM rooms_tbl";  // Query to get all rooms data
+
+//     dbConn.query(query, (error, result) => {
+//         if (error) {
+//             console.error("Error fetching data from rooms_tbl.", error);
+//             return callback(error, null);
+//         }
+
+//         return callback(null, result);  // Return result to the controller
+//     });
+// };
+
+// Function to get all data from rooms_tbl with the latest lock_tbl data and user details
 roomModel.getAllRooms = (callback) => {
-    const query = "SELECT * FROM rooms_tbl";  // Query to get all rooms data
+    const query = `
+        SELECT 
+            r.id AS room_id, 
+            r.room_number, 
+            r.created_at AS room_created_at, 
+            r.updated_at AS room_updated_at,
+            l.id AS lock_id,
+            l.status AS lock_status,
+            l.user_code AS code,
+         
+            l.created_at AS lock_created_at,
+            l.updated_at AS lock_updated_at,
+            CONCAT(u.first_name, ' ', u.last_name) AS user_full_name
+        FROM 
+            rooms_tbl r
+        LEFT JOIN (
+            SELECT 
+                id, 
+                status, 
+                user_code, 
+                room_number, 
+                created_at, 
+                updated_at
+            FROM 
+                lock_tbl 
+            WHERE 
+                (room_number, updated_at) IN (
+                    SELECT 
+                        room_number, 
+                        MAX(updated_at) 
+                    FROM 
+                        lock_tbl 
+                    GROUP BY 
+                        room_number
+                )
+        ) l 
+        ON 
+            r.room_number = l.room_number
+        LEFT JOIN 
+            users u 
+        ON 
+            l.user_code = u.code
+    `;
 
     dbConn.query(query, (error, result) => {
         if (error) {
-            console.error("Error fetching data from rooms_tbl.", error);
+            console.error("Error fetching data from rooms_tbl, lock_tbl, and users.", error);
             return callback(error, null);
         }
 
-        return callback(null, result);  // Return result to the controller
+        return callback(null, result); // Return the result to the controller
     });
 };
+
 
 module.exports = roomModel;
