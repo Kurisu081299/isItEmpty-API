@@ -53,7 +53,7 @@ lockModel.updateLockStatus = (data, callback) => {
 lockModel.getAllLockData = (callback) => {
     const query = `
         SELECT 
-            lock_tbl.id, 
+            lock_tbl.id AS lock_id, 
             lock_tbl.status, 
             lock_tbl.user_code, 
             lock_tbl.room_number, 
@@ -78,7 +78,7 @@ lockModel.getAllLockData = (callback) => {
 lockModel.getLatestByRoom = (callback) => {
     const query = `
         SELECT 
-            lock_tbl.id, 
+            lock_tbl.id AS lock_id, 
             lock_tbl.status, 
             lock_tbl.user_code, 
             lock_tbl.room_number, 
