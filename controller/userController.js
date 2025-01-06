@@ -81,10 +81,10 @@ userController.updateUser = (req, res) => {
 
 // Controller function to check username and code for login
 userController.checkUser = (req, res) => {
-    const { username, code } = req.body;
+    const { username, user_code } = req.body;
 
     // Check if the username and code match in the database
-    userModel.checkLogin(username, code, (error, result) => {
+    userModel.checkLogin(username, user_code, (error, result) => {
         if (error) {
             console.error("Error checking username and code.", error);
             return res.status(500).json({ message: "Error checking login credentials." });

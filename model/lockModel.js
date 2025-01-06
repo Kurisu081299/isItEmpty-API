@@ -55,7 +55,7 @@ lockModel.getAllLockData = (callback) => {
         SELECT 
             lock_tbl.id AS lock_id, 
             lock_tbl.status, 
-            lock_tbl.user_code AS code, 
+            lock_tbl.user_code, 
             lock_tbl.room_number, 
             lock_tbl.updated_at, 
             users.first_name, 

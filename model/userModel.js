@@ -62,7 +62,20 @@ userModel.register = (data, callback) => {
 
 // Function to get all users from the database
 userModel.getAllUsers = (callback) => {
-    const query = "SELECT * FROM users";
+    const query = `
+    SELECT 
+        id, 
+        username, 
+        code AS user_code, 
+        first_name, 
+        last_name, 
+        email_address,
+        phone_number,
+        user_type,
+        created_at, 
+        updated_at 
+    FROM 
+        users`;
 
     dbConn.query(query, (error, result) => {
         if (error) {
@@ -75,7 +88,22 @@ userModel.getAllUsers = (callback) => {
 
 // Get user(s) by code
 userModel.getUserByCode = (code, callback) => {
-    const query = "SELECT * FROM users WHERE code = ?";
+    const query = `
+    SELECT 
+        id, 
+        username, 
+        code AS user_code, 
+        first_name, 
+        last_name, 
+        email_address,
+        phone_number,
+        user_type,
+        created_at, 
+        updated_at 
+    FROM 
+        users
+    WHERE 
+       code = ?`;
 
     dbConn.query(query, [code], (error, result) => {
         if (error) {
@@ -114,14 +142,29 @@ userModel.checkUserCode = (user_code, callback) => {
     });
 };
 
-// Function to check if the username and code exist in the users table
-userModel.checkLogin = (username, code, callback) => {
-    const query = "SELECT * FROM users WHERE username = ? AND code = ?";
-    const values = [username, code]; // Use input parameters
+userModel.checkLogin = (username, user_code, callback) => {
+    const query = `
+        SELECT 
+            id, 
+            username, 
+            code AS user_code, 
+            first_name, 
+            last_name, 
+            email_address,
+            phone_number,
+            user_type,
+            created_at, 
+            updated_at 
+        FROM 
+            users 
+        WHERE 
+            username = ? AND code = ?`;
+
+    const values = [username, user_code]; // Use input parameters
 
     dbConn.query(query, values, (error, result) => {
         if (error) {
-            console.error("Error checking username and code.", error);
+            console.error("Error checking username and user_code.", error);
             return callback(error, null);
         }
 
@@ -134,7 +177,6 @@ userModel.checkLogin = (username, code, callback) => {
         return callback(null, { exists: true, data: result[0] });
     });
 };
-
 
 // Function to delete the user from the database
 userModel.deleteUser = (username, code, callback) => {

@@ -58,8 +58,8 @@ roomModel.getAllRooms = (callback) => {
             r.created_at AS room_created_at, 
             r.updated_at AS room_updated_at,
             l.id AS lock_id,
-            l.status AS lock_status,
-            l.user_code AS code,
+            l.status,
+            l.user_code AS user_code,
          
             l.created_at AS lock_created_at,
             l.updated_at AS lock_updated_at,
