@@ -3,7 +3,7 @@ const userModel = require ('../model/userModel');
 const lockController = {};
 
 lockController.insertStatus = (req, res) => {
-    const { status, user_code, room_number } = req.body;
+    const { status, user_code, room_number } = req.query;
 
     // First, check if the user_code exists in the user table
     userModel.checkUserCode(user_code, (error, exists) => {
@@ -50,7 +50,7 @@ lockController.insertStatus = (req, res) => {
 
 // Controller function to update status in the lock table
 lockController.statusUpdate = (req, res) => {
-    const { lock_id, room_number, status } = req.body;
+    const { lock_id, room_number, status } = req.query;
 
     // Ensure all necessary fields are provided
     if (!lock_id || !room_number || status === undefined) {
