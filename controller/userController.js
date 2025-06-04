@@ -1,5 +1,9 @@
+const fs = require('fs');
+const csv = require('csv-parser');
+const path = require('path');
 const userModel = require ('../model/userModel');
 const userController = {};
+
 
 userController.register = (req, res) => {
     const { username, first_name, last_name, email_address, phone_number, code } = req.body;
@@ -122,5 +126,68 @@ userController.deleteUser = (req, res) => {
         return res.status(200).json({ message: "User successfully deleted." });
     });
 };
+
+userController.bulkUploadUsers = async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: "CSV file is required." });
+    }
+
+    const filePath = req.file.path;
+    const results = [];
+    const inserted = [];
+    const skipped = [];
+
+    fs.createReadStream(filePath)
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', () => {
+            let count = 0;
+
+            const processNext = () => {
+                if (count >= results.length) {
+                    // Done processing all
+                    return res.status(200).json({ message: "Bulk upload completed", inserted, skipped });
+                }
+
+                const user = results[count];
+                count++;
+
+                const userData = {
+                    username: user.username,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    email_address: user.email_address,
+                    phone_number: user.phone_number,
+                    code: user.code
+                };
+
+                userModel.checkUniqueFields(userData, (error, checkResult) => {
+                    if (error) {
+                        console.error("Error checking unique fields:", error);
+                        skipped.push({ user: userData, reason: "DB error" });
+                        return processNext();
+                    }
+
+                    if (checkResult.exists) {
+                        skipped.push({ user: userData, reason: checkResult.message });
+                        return processNext();
+                    }
+
+                    userModel.register(userData, (error, result) => {
+                        if (error) {
+                            console.error("Error inserting user:", error);
+                            skipped.push({ user: userData, reason: "Insert error" });
+                        } else {
+                            inserted.push(userData);
+                        }
+                        processNext();
+                    });
+                });
+            };
+
+            processNext();
+        });
+};
+
 
 module.exports = userController;
