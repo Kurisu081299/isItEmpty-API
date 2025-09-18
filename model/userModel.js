@@ -44,13 +44,21 @@ userModel.register = (data, callback) => {
             return callback(null, { message: checkResult.message });
         }
 
-        // If fields are unique, proceed with insertion
+        // Insert with default user_type = 3
         const query = `
-            INSERT INTO users (username, first_name, last_name, email_address, phone_number, code)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO users (username, first_name, last_name, email_address, phone_number, code, user_type)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
 
-        dbConn.query(query, [data.username, data.first_name, data.last_name, data.email_address, data.phone_number, data.code], (error, result) => {
+        dbConn.query(query, [
+            data.username,
+            data.first_name,
+            data.last_name,
+            data.email_address,
+            data.phone_number,
+            data.code,
+            3 // Default user_type
+        ], (error, result) => {
             if (error) {
                 console.error("Error inserting user.", error);
                 return callback(error, null);
