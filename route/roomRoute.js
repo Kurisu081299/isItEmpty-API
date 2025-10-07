@@ -11,4 +11,6 @@ router.get("/", roomController.getAllRooms);
 
 router.post("/bulkupload", upload.single('file'), roomController.bulkUploadRooms);
 
+router.get("/logs", roomController.getRoomLogs);
+
 module.exports = router;

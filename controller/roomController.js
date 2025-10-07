@@ -135,4 +135,22 @@ roomController.bulkUploadRooms = (req, res) => {
         });
 };
 
+roomController.getRoomLogs = (req, res) => {
+    roomModel.getRoomLogs((error, result) => {
+        if (error) {
+            console.error("Error fetching logs.", error);
+            return res.status(500).json({ message: "Error fetching logs." });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: "No logs found." });
+        }
+
+        return res.status(200).json({
+            message: "Logs fetched successfully.",
+            data: result,
+        });
+    });
+};
+
 module.exports = roomController;

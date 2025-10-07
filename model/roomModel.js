@@ -105,5 +105,17 @@ roomModel.getAllRooms = (callback) => {
     });
 };
 
+roomModel.getRoomLogs = (callback) => {
+    const query = "SELECT * FROM logs";
+
+    dbConn.query(query, (error, result) => {
+        if (error) {
+            console.error("Error fetching data from logs table.", error);
+            return callback(error, null);
+        }
+        return callback(null, result);
+    });
+};
+
 
 module.exports = roomModel;
